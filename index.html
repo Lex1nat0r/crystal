@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Machine Truth Fragments</title>
+    <link href="img/favicon.ico" rel="icon" type="image/ico">
+    <link href="http://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet" type="text/css">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="scripts.js"></script>
+  </head>
+
+  <body>
+    <div id="chains">
+      <h1>A Thing in Chains</h1>
+      <p id="options">Make the text more: 
+	<input type="radio" name="prefixes" value="r" checked>Random</input>
+	<input type="radio" name="prefixes" value="c">Coherent</input>
+	<br/>
+	Ulysses Mode:
+	<input type="radio" name="ulysses" value="u">On</input>
+	<input type="radio" name="ulysses" value="r" checked>Off</input>
+	<br/>
+	Generate a maximum of 
+	<input type="text" id="words" title="Will only make up to 1000 words, ya bojo" value="100" size="25">
+	words
+      </p>
+      <p>
+	<input type="button" id="chain" value="Make Chains">
+      </p>
+      <div id="spinner">
+	<img src="img/chainer128Line.png">
+      </div>
+      <div id="spinning">
+	<img src="img/chainer128Line.gif">
+      </div>
+      <textarea id="chained" rows="10"></textarea>
+    </div>
+  </body>
+</html>

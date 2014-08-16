@@ -1,0 +1,46 @@
+html, body {
+    margin:0;
+    padding:0;
+    height:100%;
+}
+
+body {
+    background-image:url('img/chains128Line.png');
+    font-family: 'Droid Sans', Helvetica, Arial, sans-serif;
+}
+
+div#chains {
+    background-image:url('img/sprinkles.png');
+    position:absolute;
+    top:2%;
+    left:15%;
+    width:70%;
+    text-align:center;
+    box-shadow: 0 0 0.4em 0.4em #666;
+    border-radius:5px;
+}
+
+h1 {
+    font-family: 'Droid Serif', Georgia, Times, serif;
+}
+
+textarea#chained {
+    margin-top:auto;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:10px;
+    border-radius:5px;
+    width:95%;
+}
+
+div#footer {
+    position:absolute;
+    bottom:0;
+    height:5%;
+    width:90%;
+    left:5%;
+    background-image:url('img/sprinkles.png');
+    text-align:center;
+    box-shadow: 0 0 0.4em 0.4em #666;
+    border-radius:5px;
+}
