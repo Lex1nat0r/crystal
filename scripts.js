@@ -20,7 +20,7 @@ $(document).ready(function() {
 	    // now see if that worked
 	    frags = frags + " " + fragments[dex];
 	    dex++;
-	    $("#chained").val(frags);
+	    $("#key").text(frags);
 	}
     });
 });
