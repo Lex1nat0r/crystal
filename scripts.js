@@ -8,9 +8,7 @@ $(document).ready(function() {
     dex = 0;
 
     // see how we get the value from a group of checkboxes
-    $.get("chains.php?pref="+$("input:radio[name=prefixes]:checked").val()+
-	  "&mode=u"+
-	  "&words=200", function(data) {
+    $.get("chains.php", function(data) {
 	      $("#spinning").hide();
 	      $("#spinner").show();
 	      $("#chain").show();
