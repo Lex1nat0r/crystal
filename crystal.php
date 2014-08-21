@@ -99,15 +99,17 @@ function generate($nwords) {
 		// get a random suffix for the current prefixes
         $suf = $s[$r];
         if($suf == $NONWORD) {
-            return $outPUNCH;
+		$pref = new RPrefix();
+		$pref->prefList[0] = $NONWORD;
+		$pref->prefList[1] = $NONWORD;
 		}
 		else {
 		     $outPUNCH .= $suf.' ';
-		}		
 		
 		// now shift prefixes
-        array_shift($pref->prefList).' ';
-        array_push($pref->prefList, $suf);
+		array_shift($pref->prefList).' ';
+        	array_push($pref->prefList, $suf);
+		}
 	}
 
     return $outPUNCH;
@@ -130,10 +132,8 @@ $prefix->init($NONWORD, $NONWORD, $NONWORD);
 
 // here we go:
 build($filename);
-$word_count = intval(256);
-if ($word_count > 1000) {
-   $word_count = 1000;
-}
+$word_count = 128;
+
 $output = generate($word_count);
 
 echo $output;

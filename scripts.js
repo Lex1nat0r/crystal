@@ -8,7 +8,7 @@ $(document).ready(function() {
     dex = 0;
 
     // see how we get the value from a group of checkboxes
-    $.get("chains.php", function(data) {
+    $.get("crystal.php", function(data) {
 	      $("#spinning").hide();
 	      $("#spinner").show();
 	      $("#chain").show();
