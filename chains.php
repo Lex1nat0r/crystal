@@ -117,7 +117,7 @@ function generate($nwords) {
 $NONWORD = '\n';
 $statetab = array();
 $prefix = new RPrefix();
-$filename = 'chains-ulysses.txt';
+$filename = 'MACHINETRUTHWHOLE.txt';
 
 $output = 'here we go';
 
@@ -130,7 +130,7 @@ $prefix->init($NONWORD, $NONWORD, $NONWORD);
 
 // here we go:
 build($filename);
-$word_count = intval(200);
+$word_count = intval(256);
 if ($word_count > 1000) {
    $word_count = 1000;
 }
