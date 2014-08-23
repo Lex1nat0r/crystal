@@ -26,16 +26,28 @@ h1 {
 div#crystal_container {
     width:640px;
     height:480px;
-    border-style:solid;
-    border-width:1px;
+    position:absolute;
+    z-index:0;
     margin:0 auto;
-    background-color:#000000;
+    left:25%;
 }
 
 input#chain {
     font-family: 'Courier New', courier, monospace;
 }
 
+div#key_container {
+    position:absolute;
+    z-index:-1;
+    background-color:#000;
+    width:640px;
+    height:480px;
+    margin:0 auto;
+    left:25%;
+}
+
 p#key {
+    position:absolute;
+    top:10%;
     color:#00FF00;
 }

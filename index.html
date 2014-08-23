@@ -4,25 +4,18 @@
     <meta charset="utf-8">
     <title>Machine Truth Fragments</title>
     <link href="img/favicon.ico" rel="icon" type="image/ico">
-    <link href="http://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet" type="text/css">
     <link href="style.css" rel="stylesheet" type="text/css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="http://cdn.html5quintus.com/v0.2.0/quintus-all.min.js"></script>
     <script src="scripts.js"></script>
   </head>
 
   <body>
-    <div id="crystal_container">
+    <div id="key_container">
       <p id="key"></p>
     </div>
-    <p>
-      <input type="button" id="chain" value="Make Chains">
-    </p>
-    <div id="spinner">
-      <img src="img/chainer128Line.png">
-    </div>
-    <div id="spinning">
-      <img src="img/chainer128Line.gif">
+    <div id="crystal_container">
+      <canvas id="crystal_canvas" width="640" height="480"></canvas>
     </div>
   </body>
 </html>
