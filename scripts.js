@@ -75,7 +75,7 @@ $(document).ready(function() {
 	    
 	    // You can call the parent's constructor with this._super(..)
 	    this._super(p, {
-		asset: "THEBIKE.png",  // give player an image asset
+		asset: "avatar.png",  // give player an image asset
 		x: 60,           			// set player position
 		y: Q.height / 2, 
 		h: 26, // sprite width for ease of collisions
@@ -166,22 +166,23 @@ $(document).ready(function() {
 	} // END STEP
     });
 
-    Q.Sprite.extend("Coin", {
+    Q.Sprite.extend("Truth", {
 	// constructor!
 	init: function(p) {
             this._super(p, {
-		asset: "CryptoDosh.png",  // give the thing an image asset
-		h: 32, // sprite width for ease of collisions
-		w: 32,  // sprite height for ease of collisions
+		sprite: "truths",  // give the frags a sheet and anim
+		sheet: "truths",
 		// set the shot's collision type to Q.SPRITE_PARTICLE so that nothing considers colliding with it
 		type: Q.SPRITE_PARTICLE,
 		// set the shot's collision mask so it only collides with things that have default collisions on
-		collisionMask: Q.SPRITE_DEFAULT | Q.SPRITE_ACTIVE 
+		collisionMask: Q.SPRITE_DEFAULT | Q.SPRITE_ACTIVE
 	    });
+	    this.add("animation");
 	},
 	
 	// got to call this each frame
 	step: function(dt) {
+	    this.play("tspin");
 	    // clean up if we're off the screen
             if (this.p.x < 0) {
 		population--;
@@ -213,22 +214,23 @@ $(document).ready(function() {
 	}
     });
 
-    Q.Sprite.extend("ICE", {
+    Q.Sprite.extend("False", {
 	// constructor!
 	init: function(p) {
             this._super(p, {
-		asset: "ICE.png",  // give player an image asset
-		h: 32, // sprite width for ease of collisions
-		w: 32,  // sprite height for ease of collisions
+		sprite: "falses",  // give frags a spritesheet
+		sheet: "falses",
 		// set the shot's collision type to Q.SPRITE_PARTICLE so that nothing considers colliding with it
 		type: Q.SPRITE_PARTICLE,
 		// set the shot's collision mask so it only collides with things that have default collisions on
 		collisionMask: Q.SPRITE_DEFAULT | Q.SPRITE_ACTIVE
 	    });
+	    this.add("animation");
 	},
 	
 	// got to call this each frame
 	step: function(dt) {
+	    this.play("fspin");
 	    // clean up if we're off the screen
             if (this.p.x < 0) {
 		population--;
@@ -299,10 +301,10 @@ $(document).ready(function() {
 			var speed = 200 + (50 * diff_var) + (50 * Math.random()) - (50 * Math.random());
 			
 			if (choice == 0) {
-			    this.stage.insert(new Q.Coin({x: Q.width + 32  + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
+			    this.stage.insert(new Q.Truth({x: Q.width + 32  + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
 			}
 			else {
-			    this.stage.insert(new Q.ICE({x: Q.width + 32 + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
+			    this.stage.insert(new Q.False({x: Q.width + 32 + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
 			}
 			
 			population++;
@@ -451,7 +453,7 @@ $(document).ready(function() {
 	var button2 = box.insert(new Q.UI.Button({ x: Q.width/2, y: 350, fill: "#00FF00",
 						   label: "Help.jpeg", fontColor: "#000000", font: "400 20px Courier New" }));										   
 	var label = box.insert(new Q.UI.Text({x:Q.width/2, y: Q.height/2, color: "#00FF00",
-					      label: "CRYPTOFACIST BIKE SMASH", family: "Courier New"}));	
+					      label: "Machine Truth Fragments", family: "Courier New"}));	
 
 	button.on("click",function() {
 	    Q.clearStages();
@@ -486,11 +488,12 @@ $(document).ready(function() {
     });
 
     // loaden all them assets and get everything rolling
-    Q.load(["Monstersoul.png", "THEBIKE.png", "CryptoDosh.png", "ICE.png", "skyberspace.jpg", "THESYSTEM.png", "GreatWallofFire.png", "Packet.png", "TotallyLegit.png", "PreciousData.png", "THESYSTEMSHEETStrip.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "Packet_Get.ogg", "Packet_Inject.ogg", "Help4Noobs.jpeg"], function () {
-	// set up sprite sheet for THE SYSTEM
-	Q.sheet("SYSTEM", "THESYSTEMSHEETStrip.png", {tilew:100, tileh:500});
-	// note to you: need to have loop set to false in order for the trigger event to actually trigger
-	Q.animations("SYSTEM",  {damage: {frames: [0,1,2,3,4,5,6], loop: false, rate: 1/10}});
+    Q.load(["Monstersoul.png", "avatar.png", "skyberspace.jpg", "FalseSprites.png", "TruthSprites.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "Packet_Get.ogg", "Packet_Inject.ogg", "Help4Noobs.jpeg"], function () {
+	// set up sprite sheets for fragments
+	Q.sheet("truths", "TruthSprites.png", {tilew:32, tileh:64});
+	Q.sheet("falses", "FalseSprites.png", {tilew:32, tileh:64});
+	Q.animations("truths", {tspin: {frames: [0,1,2,3], loop: true, rate: 1/10}});
+	Q.animations("falses", {fspin: {frames: [0,1,2,3], loop: true, rate: 1/10}});
 	
 	Q.stageScene("splash");
     });
