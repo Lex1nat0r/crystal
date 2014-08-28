@@ -5,19 +5,18 @@
 
 $(document).ready(function() {
 
-    $("#spinner").hide();
-    $("#chain").hide();
-
     fragments = [];
+    badfrags = [];
     frags = "";
     dex = 0;
 
     // see how we get the value from a group of checkboxes
     $.get("crystal.php", function(data) {
-	      $("#spinning").hide();
-	      $("#spinner").show();
-	      $("#chain").show();
-	      fragments = data.split(" ");
+	data = $.parseJSON(data);
+	console.log(data.key);
+	console.log(data.badkey);
+	fragments = data.key.split(" ");
+	badfrags = data.badkey.split(" ");
 	  });
 
     $("#chain").click(function() {
@@ -25,7 +24,7 @@ $(document).ready(function() {
 	    // now see if that worked
 	    frags = frags + " " + fragments[dex];
 	    dex++;
-	    $("#key").text(frags);
+	    $("#key").html(frags);
 	}
     });
 
@@ -185,7 +184,6 @@ $(document).ready(function() {
 	    this.play("tspin");
 	    // clean up if we're off the screen
             if (this.p.x < 0) {
-		population--;
 		this.destroy();
 	    }
 
@@ -202,10 +200,9 @@ $(document).ready(function() {
 			if (dex < fragments.length) {
 			    frags = frags + " " + fragments[dex];
 			    dex++;
-			    $("#key").text(frags);
+			    $("#key").html(frags);
 			}
 			Q.audio.play("Crypto_Get.ogg");
-			population--;
 			this.destroy();
 		    }
 		    return;
@@ -233,7 +230,6 @@ $(document).ready(function() {
 	    this.play("fspin");
 	    // clean up if we're off the screen
             if (this.p.x < 0) {
-		population--;
 		this.destroy();
 	    }
 
@@ -245,18 +241,28 @@ $(document).ready(function() {
 		    if (collided.obj.isA("Player")) {
 			Q.audio.play("ICE_Crash.ogg");
 			// switch scenes on player death
-			collided.obj.destroy();
+			//collided.obj.destroy();
 			
 			// RESET EVERYTHING
-			reset();
+			//reset();
 			
 			//Q.clearStages();
-			Q.stageScene("menu", 1);
-			Q.pauseGame();
+			//Q.stageScene("menu", 1);
+			//Q.pauseGame();
+			if (dex < fragments.length) {
+			    frags = frags + " <span>" + badfrags[dex] + "</span>";
+			    dex++;
+			    $("#key").html(frags);
+			}
+			else {
+			    reset();
+			    Q.clearStages();
+			    Q.stageScene("menu", 1);
+			    Q.pauseGame();
+			}
+			this.destroy();
 		    }
-		    else {
-			return;
-		    }
+		    return;
 		}
 	    }
 	}
@@ -307,7 +313,6 @@ $(document).ready(function() {
 			    this.stage.insert(new Q.False({x: Q.width + 32 + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
 			}
 			
-			population++;
 		    }
 		    
 		    secs = 0;
@@ -334,7 +339,6 @@ $(document).ready(function() {
     var frame = 0;
     var secs = 0;
     var total_secs = 0;
-    var population = 0;
     var score = 0;
     var total_score = 0;
 
@@ -348,7 +352,6 @@ $(document).ready(function() {
 	frame = 0;
 	secs = 0;
 	total_secs = 0;
-	population = 0;
 	score = 0;
 	total_score = 0;
 	diff_secs = 1;

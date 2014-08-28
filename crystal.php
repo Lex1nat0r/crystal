@@ -104,7 +104,7 @@ function generate($nwords) {
 		$pref->prefList[1] = $NONWORD;
 		}
 		else {
-		     $outPUNCH .= $suf.' ';
+		     $outPUNCH .= trim($suf).' ';
 		
 		// now shift prefixes
 		array_shift($pref->prefList).' ';
@@ -115,13 +115,35 @@ function generate($nwords) {
     return $outPUNCH;
 }
 
+// generate random list of words to use for bad fragments
+function badfrags($fragcount) {
+	 global $statetab;
+
+	 $badfrags = '';
+	 $i = 0;
+	 while ($i < 128) {
+             //$badkey .= ' butts';
+             $keys = array_keys($statetab);
+             $p = $keys[rand(0, count($keys)-1)];
+    
+             list($pref1, $pref2) = explode(':', $p);
+             $badkey_add = $pref1;
+             if ($badkey_add != $NONWORD) {
+                 $badfrags .= $badkey_add.' ';
+                 $i++;
+             }
+	 }
+	 return $badfrags;
+}
+
 // initial variable declarations
 $NONWORD = '\n';
 $statetab = array();
 $prefix = new RPrefix();
 $filename = 'MACHINETRUTHWHOLE.txt';
+$word_count = 128;
 
-$output = 'here we go';
+$key = 'here we go';
 
 // seed that random
 list($usec, $sec) = explode(' ', microtime());
@@ -132,9 +154,13 @@ $prefix->init($NONWORD, $NONWORD, $NONWORD);
 
 // here we go:
 build($filename);
-$word_count = 128;
 
-$output = generate($word_count);
+$key = generate($word_count);
 
-echo $output;
+// build corrupted string using random prefixes
+$badkey = '';
+$badkey = badfrags($word_count);
+
+$retval = json_encode(array("key" => $key, "badkey" => $badkey));
+echo $retval;
 ?>

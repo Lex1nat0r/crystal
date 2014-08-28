@@ -51,3 +51,7 @@ p#key {
     top:10%;
     color:#00FF00;
 }
+
+p#key span {
+    color:#FF0000;
+}
