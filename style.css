@@ -49,6 +49,8 @@ div#key_container {
 p#key {
     position:absolute;
     top:10%;
+    left:5%;
+    right:5%;
     color:#00FF00;
 }
 

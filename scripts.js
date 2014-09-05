@@ -15,7 +15,7 @@ $(document).ready(function() {
 	data = $.parseJSON(data);
 	console.log(data.key);
 	console.log(data.badkey);
-	fragments = data.key.split(" ");
+	fragments = $.trim(data.key).split(" ");
 	badfrags = data.badkey.split(" ");
 	  });
 
@@ -196,12 +196,12 @@ $(document).ready(function() {
 			// add to score
 			score++;
 			total_score++;
-			updateHUD();
 			if (dex < fragments.length) {
 			    frags = frags + " " + fragments[dex];
 			    dex++;
 			    $("#key").html(frags);
 			}
+			updateHUD();
 			Q.audio.play("Crypto_Get.ogg");
 			this.destroy();
 		    }
@@ -252,6 +252,7 @@ $(document).ready(function() {
 			if (dex < fragments.length) {
 			    frags = frags + " <span>" + badfrags[dex] + "</span>";
 			    dex++;
+			    updateHUD();
 			    $("#key").html(frags);
 			}
 			else {
@@ -363,7 +364,7 @@ $(document).ready(function() {
     }
 
     function updateHUD() {
-	Q.stageScene("hud", 3, {num: total_score});
+	Q.stageScene("hud", 3, {num: total_score, total_frags: dex});
     }
 
     // game loops start here
@@ -393,9 +394,9 @@ $(document).ready(function() {
 	}));
 	
 	var label = container.insert(new Q.UI.Text({
-	    x: 0, 
+	    x: 128, 
 	    y: 0,
-	    label: "Score: " + stage.options.num,
+	    label: (stage.options.num/fragments.length * 100).toFixed(2) + '%' + ' ' + stage.options.total_frags + '/' + fragments.length,
 	    color: "#00FF00",
 	    family: "Courier New"
 	}));

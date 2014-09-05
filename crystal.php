@@ -93,7 +93,7 @@ function generate($nwords) {
     $pref->prefList[0] = $pref1;
     $pref->prefList[1] = $pref2;
 
-    for ($i = 0; $i <= $nwords; $i++) {
+    for ($i = 0; $i < $nwords; $i++) {
         $s = $statetab[$pref->getID()];
         $r = rand(0, count($s)-1);
 		// get a random suffix for the current prefixes
@@ -141,7 +141,7 @@ $NONWORD = '\n';
 $statetab = array();
 $prefix = new RPrefix();
 $filename = 'MACHINETRUTHWHOLE.txt';
-$word_count = 128;
+$word_count = 64;
 
 $key = 'here we go';
 
