@@ -93,23 +93,6 @@ $(document).ready(function() {
 	
 	step: function(dt) { // BEGIN STEP
 
-	    // space makes shoot
-	    Q.input.on("fire", this, function() {
-		if (malformed_packets > 0) {
-		    var d = new Date();
-		    // no constant shooting for you
-		    if (d.getTime() > this.p.lastShot + 200) {
-			// "spawn" the shot, put it at our y and offset our x with an offset so we don't collide with the shot
-			var shot = this.stage.insert(new Q.LegitPacket({x: this.p.x + 43, y: this.p.y}));
-			Q.audio.play("Packet_Inject.ogg");
-			malformed_packets--;
-			updateHUD();
-			
-			this.p.lastShot = d.getTime();
-		    }
-		}
-	    });
-	    
 	    // #realtalk: I stole most of this from Quintus' stepControls
 	    // modified a little for taste
 	    var moved = false;
@@ -195,7 +178,6 @@ $(document).ready(function() {
 		    if (collided.obj.isA("Player")) {
 			// add to score
 			score++;
-			total_score++;
 			if (dex < fragments.length) {
 			    frags = frags + " " + fragments[dex];
 			    dex++;
@@ -341,7 +323,6 @@ $(document).ready(function() {
     var secs = 0;
     var total_secs = 0;
     var score = 0;
-    var total_score = 0;
 
     // difficulty vars
     var diff_secs = 1;
@@ -354,7 +335,6 @@ $(document).ready(function() {
 	secs = 0;
 	total_secs = 0;
 	score = 0;
-	total_score = 0;
 	diff_secs = 1;
 	diff_var = 0;
 	diff_adjust = 0;
@@ -364,7 +344,7 @@ $(document).ready(function() {
     }
 
     function updateHUD() {
-	Q.stageScene("hud", 3, {num: total_score, total_frags: dex});
+	Q.stageScene("hud", 3, {num: score, total_frags: dex});
     }
 
     // game loops start here
@@ -400,15 +380,6 @@ $(document).ready(function() {
 	    color: "#00FF00",
 	    family: "Courier New"
 	}));
-	
-	for (var i = 0; i < stage.options.packets; i++) {
-	    stage.insert(new Q.UI.Button({
-		asset: 'TotallyLegit.png',
-		x: 32 + (i * 32),
-		scale: 0.5,
-		y: Q.height - 50
-	    }));
-	}
 	
 	container.fit(20);
     });
@@ -492,7 +463,7 @@ $(document).ready(function() {
     });
 
     // loaden all them assets and get everything rolling
-    Q.load(["Monstersoul.png", "avatar.png", "skyberspace.jpg", "FalseSprites.png", "TruthSprites.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "Packet_Get.ogg", "Packet_Inject.ogg", "Help4Noobs.jpeg"], function () {
+    Q.load(["Monstersoul.png", "avatar.png", "skyberspace.jpg", "FalseSprites.png", "TruthSprites.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "Help4Noobs.jpeg"], function () {
 	// set up sprite sheets for fragments
 	Q.sheet("truths", "TruthSprites.png", {tilew:32, tileh:64});
 	Q.sheet("falses", "FalseSprites.png", {tilew:32, tileh:64});
