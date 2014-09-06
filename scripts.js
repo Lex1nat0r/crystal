@@ -9,15 +9,16 @@ $(document).ready(function() {
     badfrags = [];
     frags = "";
     dex = 0;
+    data_got = false;
 
-    // see how we get the value from a group of checkboxes
     $.get("crystal.php", function(data) {
 	data = $.parseJSON(data);
 	console.log(data.key);
 	console.log(data.badkey);
 	fragments = $.trim(data.key).split(" ");
 	badfrags = data.badkey.split(" ");
-	  });
+	data_got = true;
+    });
 
     $("#chain").click(function() {
 	if (dex < fragments.length) {
@@ -145,6 +146,25 @@ $(document).ready(function() {
 		    p.destX = p.origX;
 		}
 	    }
+	    
+	    if (key_get) {
+		fadeMe(this, dt);
+		if (this.p.opacity <= 0) {
+		    data_got = false;
+		    Q.clearStages();
+		    Q.stageScene("menu", 1);
+		    Q.pauseGame();
+		    $.get("crystal.php", function(data) {
+			data = $.parseJSON(data);
+			console.log(data.key);
+			console.log(data.badkey);
+			fragments = $.trim(data.key).split(" ");
+			badfrags = data.badkey.split(" ");
+			data_got = true;
+		    });
+		}
+	    }
+
 	} // END STEP
     });
 
@@ -172,22 +192,33 @@ $(document).ready(function() {
 
 	    this.p.x -= this.p.vx * dt;
 	    
-	    // manually check for collisions because I don't like how Quintus' 2d component does it
-	    while((collided = this.stage.search(this))) {
-		if(collided) {
-		    if (collided.obj.isA("Player")) {
-			// add to score
-			score++;
-			if (dex < fragments.length) {
-			    frags = frags + " " + fragments[dex];
-			    dex++;
-			    $("#key").html(frags);
+	    if (key_get) {
+		fadeMe(this, dt);
+		if (this.p.opacity <= 0) {
+		    this.destroy();
+		}
+	    }
+	    else {
+		// manually check for collisions because I don't like how Quintus' 2d component does it
+		while((collided = this.stage.search(this))) {
+		    if(collided) {
+			if (collided.obj.isA("Player")) {
+			    // add to score
+			    if (dex < fragments.length) {
+				frags = frags + " " + fragments[dex];
+				dex++;
+				score++;
+				$("#key").html(frags);
+				if (dex >= fragments.length) {
+				    key_get = true;
+				}
+			    }
+			    updateHUD();
+			    Q.audio.play("Crypto_Get.ogg");
+			    this.destroy();
 			}
-			updateHUD();
-			Q.audio.play("Crypto_Get.ogg");
-			this.destroy();
+			return;
 		    }
-		    return;
 		}
 	    }
 	}
@@ -217,35 +248,40 @@ $(document).ready(function() {
 
 	    this.p.x -= this.p.vx * dt;
 	    
-	    // manually check for collisions because I don't like how Quintus' 2d component does it
-	    while((collided = this.stage.search(this))) {
-		if(collided) {
-		    if (collided.obj.isA("Player")) {
-			Q.audio.play("ICE_Crash.ogg");
-			// switch scenes on player death
-			//collided.obj.destroy();
+	    if (key_get) {
+		fadeMe(this, dt);
+		if (this.p.opacity <= 0) {
+		    this.destroy();
+		}
+	    }
+	    else {
+		// manually check for collisions because I don't like how Quintus' 2d component does it
+		while((collided = this.stage.search(this))) {
+		    if(collided) {
+			if (collided.obj.isA("Player")) {
+			    Q.audio.play("ICE_Crash.ogg");
+			    // switch scenes on player death
+			    //collided.obj.destroy();
 			
-			// RESET EVERYTHING
-			//reset();
+			    // RESET EVERYTHING
+			    //reset();
 			
-			//Q.clearStages();
-			//Q.stageScene("menu", 1);
-			//Q.pauseGame();
-			if (dex < fragments.length) {
-			    frags = frags + " <span>" + badfrags[dex] + "</span>";
-			    dex++;
-			    updateHUD();
-			    $("#key").html(frags);
+			    //Q.clearStages();
+			    //Q.stageScene("menu", 1);
+			    //Q.pauseGame();
+			    if (dex < fragments.length) {
+				frags = frags + " <span>" + badfrags[dex] + "</span>";
+				dex++;
+				updateHUD();
+				$("#key").html(frags);
+			    }
+			    else {
+				key_get = true;
+			    }
+			    this.destroy();
 			}
-			else {
-			    reset();
-			    Q.clearStages();
-			    Q.stageScene("menu", 1);
-			    Q.pauseGame();
-			}
-			this.destroy();
+			return;
 		    }
-		    return;
 		}
 	    }
 	}
@@ -268,37 +304,39 @@ $(document).ready(function() {
 	},
 
 	update: function(dt) {
-	    // timer
-	    total_secs += dt;
-	    
-	    // maken them bad guys
-	    if (secs < diff_secs) {
-		secs += dt;
+	    if (!key_get) {
+		// timer
+		total_secs += dt;
 		
-		if (secs >= diff_secs) {
-		    // now we calculate difficulty based on how long the game's been going and the player's score and progress
-		    diff_var = Math.floor(Math.sqrt(Math.floor(total_secs) + Math.floor(Math.sqrt(score)))) + diff_adjust;
-		    
-		    for (var i = 0; i < diff_var; i++) {
-			// should produce a random integer between 0 and 2
-			// and then between 0 and 7
-			// as if by magic
-			var choice = Math.floor(Math.random() * 3);
-			var height = Math.floor(Math.random() * 7) + 1;
+		// maken them bad guys
+		if (secs < diff_secs) {
+		    secs += dt;
+		
+		    if (secs >= diff_secs) {
+			// now we calculate difficulty based on how long the game's been going and the player's score and progress
+			diff_var = Math.floor(Math.sqrt(Math.floor(total_secs) + Math.floor(Math.sqrt(score)))) + diff_adjust;
 			
-			// speed of new things starts at 200 + difficulty, then add/subtract random factor
-			var speed = 200 + (50 * diff_var) + (50 * Math.random()) - (50 * Math.random());
-			
-			if (choice == 0) {
-			    this.stage.insert(new Q.Truth({x: Q.width + 32  + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
+			for (var i = 0; i < diff_var; i++) {
+			    // should produce a random integer between 0 and 2
+			    // and then between 0 and 7
+			    // as if by magic
+			    var choice = Math.floor(Math.random() * 3);
+			    var height = Math.floor(Math.random() * 7) + 1;
+			    
+			    // speed of new things starts at 200 + difficulty, then add/subtract random factor
+			    var speed = 200 + (50 * diff_var) + (50 * Math.random()) - (50 * Math.random());
+			    
+			    if (choice == 0) {
+				this.stage.insert(new Q.Truth({x: Q.width + 32  + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
+			    }
+			    else {
+				this.stage.insert(new Q.False({x: Q.width + 32 + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
+			    }
+			    
 			}
-			else {
-			    this.stage.insert(new Q.False({x: Q.width + 32 + Math.floor(Math.random() * 320), y: 64 * height + (32 * Math.random()) - (32 * Math.random()), vx: speed}));
-			}
 			
+			secs = 0;
 		    }
-		    
-		    secs = 0;
 		}
 	    }
 	},
@@ -323,6 +361,7 @@ $(document).ready(function() {
     var secs = 0;
     var total_secs = 0;
     var score = 0;
+    var key_get = false;
 
     // difficulty vars
     var diff_secs = 1;
@@ -340,11 +379,18 @@ $(document).ready(function() {
 	diff_adjust = 0;
 	frags = "";
 	dex = 0;
+	key_get = false;
 	$("#key").text(frags);
     }
 
     function updateHUD() {
 	Q.stageScene("hud", 3, {num: score, total_frags: dex});
+    }
+
+    function fadeMe(obj, dt) {
+	if (obj.p.opacity > 0) {
+	    obj.p.opacity -= (dt/2);
+	}
     }
 
     // game loops start here
@@ -387,7 +433,7 @@ $(document).ready(function() {
     // I dunno, game over meny or something
     Q.scene("menu", function(stage) {
 	var box = stage.insert(new Q.UI.Container({
-	    x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)"
+	    x: Q.width/2, y: Q.height - 80, fill: "rgba(0,0,0,0.5)"
 	}));
 
 	var button = box.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#00FF00",
@@ -395,14 +441,16 @@ $(document).ready(function() {
 	var button2 = box.insert(new Q.UI.Button({ x: 0, y: 50, fill: "#00FF00",
 						   label: "Jack Out", fontColor: "#000000", font: "400 20px Courier New" })) 										   
 	var label = box.insert(new Q.UI.Text({x:10, y: -10 - button.p.h, 
-					      label: "Dial-Up'd!", color: "#00FF00", family: "Courier New"}));								
+					      label: "Key was " + (score/fragments.length * 100).toFixed(2) + '% recovered', color: "#00FF00", family: "Courier New"}));								
 
 	button.on("click",function() {
-	    Q.clearStages();
-	    reset();
-	    Q.stageScene('game');
-	    updateHUD();
-	    Q.unpauseGame();
+	    if (data_got) {
+		Q.clearStages();
+		reset();
+		Q.stageScene('game');
+		updateHUD();
+		Q.unpauseGame();
+	    }
 	});
 	
 	button2.on("click",function() {
@@ -431,10 +479,12 @@ $(document).ready(function() {
 					      label: "Machine Truth Fragments", family: "Courier New"}));	
 
 	button.on("click",function() {
-	    Q.clearStages();
-	    reset();
-	    Q.stageScene('game');
-	    updateHUD();
+	    if (data_got) {
+		Q.clearStages();
+		reset();
+		Q.stageScene('game');
+		updateHUD();
+	    }
 	});
 	
 	button2.on("click",function() {
