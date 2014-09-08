@@ -11,6 +11,12 @@ $(document).ready(function() {
     dex = 0;
     data_got = false;
 
+    butts_frags = [];
+
+    for (i = 0; i < 64; i++) {
+	butts_frags.push("butts ");
+    }
+
     $.get("crystal.php", function(data) {
 	data = $.parseJSON(data);
 	console.log(data.key);
@@ -204,17 +210,15 @@ $(document).ready(function() {
 		    if(collided) {
 			if (collided.obj.isA("Player")) {
 			    // add to score
-			    if (dex < fragments.length) {
-				frags = frags + " " + fragments[dex];
-				dex++;
-				score++;
-				$("#key").html(frags);
-				if (dex >= fragments.length) {
-				    key_get = true;
-				}
-			    }
+			    frags = frags + " " + fragments[dex];
+			    dex++;
+			    score++;
+			    $("#key").html(frags);
 			    updateHUD();
 			    Q.audio.play("Crypto_Get.ogg");
+			    if (dex >= fragments.length) {
+				key_get = true;
+			    }
 			    this.destroy();
 			}
 			return;
@@ -259,43 +263,23 @@ $(document).ready(function() {
 		while((collided = this.stage.search(this))) {
 		    if(collided) {
 			if (collided.obj.isA("Player")) {
-			    Q.audio.play("ICE_Crash.ogg");
-			    // switch scenes on player death
-			    //collided.obj.destroy();
-			
-			    // RESET EVERYTHING
-			    //reset();
-			
-			    //Q.clearStages();
-			    //Q.stageScene("menu", 1);
-			    //Q.pauseGame();
 			    if (dex < fragments.length) {
+				Q.audio.play("ICE_Crash.ogg");
 				frags = frags + " <span>" + badfrags[dex] + "</span>";
 				dex++;
 				updateHUD();
 				$("#key").html(frags);
+				if (dex >= fragments.length) {
+				    key_get = true;
+				}
+				this.destroy();
 			    }
-			    else {
-				key_get = true;
-			    }
-			    this.destroy();
 			}
 			return;
 		    }
 		}
 	    }
 	}
-    });
-
-    Q.Sprite.extend("Splash", {
-	// constructor!
-	init: function(p) {
-            this._super(p, {
-		x: 40,
-		y: Q.height - 30,
-		asset: "Monstersoul.png",
-	    });
-	},
     });
 
     Q.GameObject.extend("Spawner",{
@@ -314,7 +298,7 @@ $(document).ready(function() {
 		
 		    if (secs >= diff_secs) {
 			// now we calculate difficulty based on how long the game's been going and the player's score and progress
-			diff_var = Math.floor(Math.sqrt(Math.floor(total_secs) + Math.floor(Math.sqrt(score)))) + diff_adjust;
+			diff_var = Math.floor(Math.sqrt(Math.floor(total_secs/2) + Math.floor(Math.sqrt(score))));
 			
 			for (var i = 0; i < diff_var; i++) {
 			    // should produce a random integer between 0 and 2
@@ -366,7 +350,6 @@ $(document).ready(function() {
     // difficulty vars
     var diff_secs = 1;
     var diff_var = 0;
-    var diff_adjust = 0;
 
     function reset() {
 	score = 0;
@@ -376,7 +359,6 @@ $(document).ready(function() {
 	score = 0;
 	diff_secs = 1;
 	diff_var = 0;
-	diff_adjust = 0;
 	frags = "";
 	dex = 0;
 	key_get = false;
@@ -469,14 +451,14 @@ $(document).ready(function() {
 	    x: 0, y: 0
 	}));
 
-	box.insert(new Q.Splash());
-	
 	var button = box.insert(new Q.UI.Button({ x: Q.width/2, y: 300, fill: "#00FF00",
-						  label: "Jack In", fontColor: "#000000", font: "400 20px Courier New" }));
+						  label: "Enter", fontColor: "#000000", font: "400 20px Courier New" }));
 	var button2 = box.insert(new Q.UI.Button({ x: Q.width/2, y: 350, fill: "#00FF00",
-						   label: "Help.jpeg", fontColor: "#000000", font: "400 20px Courier New" }));										   
+						   label: "Help", fontColor: "#000000", font: "400 20px Courier New" }));										   
 	var label = box.insert(new Q.UI.Text({x:Q.width/2, y: Q.height/2, color: "#00FF00",
 					      label: "Machine Truth Fragments", family: "Courier New"}));	
+
+	var butt = box.insert(new Q.UI.Button({ asset:'Monstersoul.png', x:40, y:Q.height-30}));
 
 	button.on("click",function() {
 	    if (data_got) {
@@ -488,10 +470,17 @@ $(document).ready(function() {
 	});
 	
 	button2.on("click",function() {
-	    Q.clearStages();
-	    Q.stageScene('help');
+	    if (data_got) {
+		Q.clearStages();
+		Q.stageScene('help');
+	    }
 	});
 	
+	butt.on("click",function() {
+	    badfrags = butts_frags;
+	    console.log(butts_frags);
+	});
+
 	box.fit(Q.width, Q.height);
 	
     });
@@ -499,21 +488,27 @@ $(document).ready(function() {
     // help screen, whatever
     Q.scene("help", function(stage) {
 
-	var button = stage.insert(new Q.UI.Button({
-	    asset: 'Help4Noobs.jpeg',
+	var container = stage.insert(new Q.UI.Container({
+	    x:0, y:0
+	}));
+
+	var button = container.insert(new Q.UI.Button({
+	    asset: 'MachineTruthHelp.png',
 	    x: Q.width/2,
 	    y: Q.height/2
 	}));
-	
+
 	button.on("click",function() {
 	    Q.clearStages();
 	    Q.stageScene('splash');
 	});
-	
+
+	container.fit(Q.width, Q.height);
+
     });
 
     // loaden all them assets and get everything rolling
-    Q.load(["Monstersoul.png", "avatar.png", "skyberspace.jpg", "FalseSprites.png", "TruthSprites.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "Help4Noobs.jpeg"], function () {
+    Q.load(["Monstersoul.png", "avatar.png", "skyberspace.jpg", "FalseSprites.png", "TruthSprites.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "MachineTruthHelp.png"], function () {
 	// set up sprite sheets for fragments
 	Q.sheet("truths", "TruthSprites.png", {tilew:32, tileh:64});
 	Q.sheet("falses", "FalseSprites.png", {tilew:32, tileh:64});
