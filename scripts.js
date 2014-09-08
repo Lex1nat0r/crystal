@@ -7,7 +7,7 @@ $(document).ready(function() {
 
     fragments = [];
     badfrags = [];
-    frags = "";
+    frags = [];
     dex = 0;
     data_got = false;
 
@@ -24,15 +24,6 @@ $(document).ready(function() {
 	fragments = $.trim(data.key).split(" ");
 	badfrags = data.badkey.split(" ");
 	data_got = true;
-    });
-
-    $("#chain").click(function() {
-	if (dex < fragments.length) {
-	    // now see if that worked
-	    frags = frags + " " + fragments[dex];
-	    dex++;
-	    $("#key").html(frags);
-	}
     });
 
     // Now set up your game (most games will load a separate .js file)
@@ -210,10 +201,10 @@ $(document).ready(function() {
 		    if(collided) {
 			if (collided.obj.isA("Player")) {
 			    // add to score
-			    frags = frags + " " + fragments[dex];
+			    frags = frags.concat((" " + fragments[dex]).split(''));
 			    dex++;
 			    score++;
-			    $("#key").html(frags);
+			    //$("#key").html(frags);
 			    updateHUD();
 			    Q.audio.play("Crypto_Get.ogg");
 			    if (dex >= fragments.length) {
@@ -265,10 +256,10 @@ $(document).ready(function() {
 			if (collided.obj.isA("Player")) {
 			    if (dex < fragments.length) {
 				Q.audio.play("ICE_Crash.ogg");
-				frags = frags + " <span>" + badfrags[dex] + "</span>";
+				frags = frags.concat((" <span>" + badfrags[dex] + "</span>").split(''));
 				dex++;
 				updateHUD();
-				$("#key").html(frags);
+				//$("#key").html(frags);
 				if (dex >= fragments.length) {
 				    key_get = true;
 				}
@@ -288,6 +279,15 @@ $(document).ready(function() {
 	},
 
 	update: function(dt) {
+	    // doing a lot of work here to get the constructed key to appear procedurally
+	    if (frag_dex < frags.length) {
+		// frags was originally a string, but converting it to an array allows us to 
+		// index into it to add one character per frame to the key we're displaying
+		display_key += frags[frag_dex];
+		updateHUD();
+		$("#key").html(display_key);
+		frag_dex++;
+	    }
 	    if (!key_get) {
 		// timer
 		total_secs += dt;
@@ -346,6 +346,9 @@ $(document).ready(function() {
     var total_secs = 0;
     var score = 0;
     var key_get = false;
+    var key = "";
+    var display_key = "";
+    var frag_dex = 0;
 
     // difficulty vars
     var diff_secs = 1;
@@ -359,10 +362,13 @@ $(document).ready(function() {
 	score = 0;
 	diff_secs = 1;
 	diff_var = 0;
-	frags = "";
+	frags = [];
 	dex = 0;
+	key = "";
+	display_key = "";
+	frag_dex = 0;
 	key_get = false;
-	$("#key").text(frags);
+	$("#key").text("");
     }
 
     function updateHUD() {
