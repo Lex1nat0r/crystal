@@ -44,26 +44,6 @@ $(document).ready(function() {
 	82: "Reset"
     });
     
-    Q.Sprite.extend("Cyberspace", {
-	init: function(p) {
-	    this._super(p, {
-		asset: "skyberspace.jpg", // background image based on art by Jill Sauer
-		x: 0,
-		// set the sky's collision type to Q.SPRITE_NONE so that nothing considers colliding with it
-		type: Q.SPRITE_NONE
-	    });
-	    
-	    this.p.vx = 5;
-	},
-	
-	step: function(dt) {
-	    this.p.x -= 5;
-	    if (this.p.x < -320) {
-		this.p.x = Q.width + 315;
-	    }
-	}
-    });
-
     Q.Sprite.extend("Player",{
 
 	// the init constructor is called on creation
@@ -206,7 +186,7 @@ $(document).ready(function() {
 			    score++;
 			    //$("#key").html(frags);
 			    updateHUD();
-			    Q.audio.play("Crypto_Get.ogg");
+			    Q.audio.play("Pickup_Truth.ogg");
 			    if (dex >= fragments.length) {
 				key_get = true;
 			    }
@@ -255,7 +235,7 @@ $(document).ready(function() {
 		    if(collided) {
 			if (collided.obj.isA("Player")) {
 			    if (dex < fragments.length) {
-				Q.audio.play("ICE_Crash.ogg");
+				Q.audio.play("Pickup_False.ogg");
 				frags = frags.concat((" <span>" + badfrags[dex] + "</span>").split(''));
 				dex++;
 				updateHUD();
@@ -343,7 +323,7 @@ $(document).ready(function() {
     var score = 0;
     var frame = 0;
     var secs = 0;
-    var total_secs = 0;
+    var total_secs = 10;
     var score = 0;
     var key_get = false;
     var key = "";
@@ -358,7 +338,7 @@ $(document).ready(function() {
 	score = 0;
 	frame = 0;
 	secs = 0;
-	total_secs = 0;
+	total_secs = 10;
 	score = 0;
 	diff_secs = 1;
 	diff_var = 0;
@@ -398,6 +378,8 @@ $(document).ready(function() {
 	
 	stage.add("viewport")
 	    .centerOn(Math.floor(Q.width/2), Math.floor(Q.height/2));
+	
+	Q.audio.play("machinepulse.ogg", {loop: true});
     });
 
     // this is where things get tricky
@@ -449,6 +431,8 @@ $(document).ready(function() {
 	})
 
 	box.fit(20);
+
+	Q.audio.stop();
     });
 
     // splash screen, whatever
@@ -514,7 +498,7 @@ $(document).ready(function() {
     });
 
     // loaden all them assets and get everything rolling
-    Q.load(["Monstersoul.png", "avatar.png", "skyberspace.jpg", "FalseSprites.png", "TruthSprites.png", "Crypto_Get.ogg", "Data_Get.ogg", "Explosion.ogg", "ICE_Crash.ogg", "MachineTruthHelp.png"], function () {
+    Q.load(["Monstersoul.png", "avatar.png", "FalseSprites.png", "TruthSprites.png", "Pickup_Truth.ogg", "Pickup_False.ogg", "machinepulse.ogg", "MachineTruthHelp.png"], function () {
 	// set up sprite sheets for fragments
 	Q.sheet("truths", "TruthSprites.png", {tilew:32, tileh:64});
 	Q.sheet("falses", "FalseSprites.png", {tilew:32, tileh:64});
