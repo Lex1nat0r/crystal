@@ -448,7 +448,7 @@ $(document).ready(function() {
 	var label = box.insert(new Q.UI.Text({x:Q.width/2, y: Q.height/2, color: "#00FF00",
 					      label: "Machine Truth Fragments", family: "Courier New"}));	
 
-	var butt = box.insert(new Q.UI.Button({ asset:'Monstersoul.png', x:40, y:Q.height-30}));
+	var butt = box.insert(new Q.UI.Button({ asset:'ProcsykeIco.png', x:40, y:Q.height-30}));
 
 	button.on("click",function() {
 	    if (data_got) {
@@ -498,7 +498,7 @@ $(document).ready(function() {
     });
 
     // loaden all them assets and get everything rolling
-    Q.load(["Monstersoul.png", "avatar.png", "FalseSprites.png", "TruthSprites.png", "Pickup_Truth.ogg", "Pickup_False.ogg", "machinepulse.ogg", "MachineTruthHelp.png"], function () {
+    Q.load(["ProcsykeIco.png", "avatar.png", "FalseSprites.png", "TruthSprites.png", "Pickup_Truth.ogg", "Pickup_False.ogg", "machinepulse.ogg", "MachineTruthHelp.png"], function () {
 	// set up sprite sheets for fragments
 	Q.sheet("truths", "TruthSprites.png", {tilew:32, tileh:64});
 	Q.sheet("falses", "FalseSprites.png", {tilew:32, tileh:64});
