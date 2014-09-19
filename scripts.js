@@ -22,7 +22,8 @@ $(document).ready(function() {
 	console.log(data.key);
 	console.log(data.badkey);
 	fragments = $.trim(data.key).split(" ");
-	badfrags = data.badkey.split(" ");
+	bad_data = data.badkey.split(" ");
+	badfrags = bad_data
 	data_got = true;
     });
 
@@ -329,6 +330,7 @@ $(document).ready(function() {
     var key = "";
     var display_key = "";
     var frag_dex = 0;
+    var butts = false;
 
     // difficulty vars
     var diff_secs = 1;
@@ -349,6 +351,7 @@ $(document).ready(function() {
 	frag_dex = 0;
 	key_get = false;
 	$("#key").text("");
+	butts = false;
     }
 
     function updateHUD() {
@@ -467,8 +470,14 @@ $(document).ready(function() {
 	});
 	
 	butt.on("click",function() {
-	    badfrags = butts_frags;
-	    console.log(butts_frags);
+	    if (butts) {
+		badfrags = bad_data;
+		butts = false;
+	    }
+	    else{
+		badfrags = butts_frags;
+		butts = true;
+	    }
 	});
 
 	box.fit(Q.width, Q.height);
